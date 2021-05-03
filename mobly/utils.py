@@ -22,9 +22,11 @@ import logging
 import os
 import pipes
 import platform
+import pdb
 import random
 import re
 import string
+import sys
 import subprocess
 import threading
 import time
@@ -72,6 +74,24 @@ GMT_to_olson = {
 
 class Error(Exception):
   """Raised when an error occurs in a util"""
+
+
+class PDBable:
+  """Let inherited class be capable of entering pdb consolt automatically"""
+  def __init__(self):
+    if os.environ.get('MOBLY_PDB_ENABLE', 0):
+      pdb.Pdb().set_trace(sys._getframe().f_back)
+    else:
+      logging.warning("pdb: Skipping pdb request while not enabled!")
+
+  def pdb(self, message):
+    """Enter the pdb console and move to the frame where calling pdb
+
+    Args:
+      message: Message to print before entering pdb
+    """
+    logging.warning(f"pdb: {message}")
+    pdb.Pdb().set_trace(sys._getframe().f_back)
 
 
 def abs_path(path):
@@ -279,8 +299,7 @@ def concurrent_exec(func, param_list, max_workers=30, raise_on_exception=False):
     RuntimeError: If executing any of the tasks failed and
       `raise_on_exception` is True.
   """
-  with concurrent.futures.ThreadPoolExecutor(
-      max_workers=max_workers) as executor:
+  with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
     # Start the load operations and mark each future with its params
     future_to_params = {executor.submit(func, *p): p for p in param_list}
     return_vals = []

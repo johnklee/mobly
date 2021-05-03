@@ -989,11 +989,14 @@ class BaseTestClass:
       else:
         # No test method specified by user, execute all in test class.
         test_names = self.get_existing_test_names()
+
     self.results.requested = test_names
     self.summary_writer.dump(self.results.requested_test_names_dict(),
                              records.TestSummaryEntryType.TEST_NAME_LIST)
     tests = self._get_test_methods(test_names)
     try:
+      # Launching snippet apk com.google.android.mobly.snippet.bundled with
+      # protocol 1.0: Remeber to step in below line for more info (John:Done)
       setup_class_result = self._setup_class()
       if setup_class_result:
         return setup_class_result
