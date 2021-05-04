@@ -181,6 +181,7 @@ class BaseTestClass(utils.PDBable):
     Args:
       configs: A config_parser.TestRunConfig object.
     """
+    utils.PDBable.__init__(self)
     self.tests = []
     class_identifier = self.__class__.__name__
     if configs.test_class_name_suffix:
@@ -427,6 +428,7 @@ class BaseTestClass(utils.PDBable):
     Implementation is optional.
     """
 
+  @utils.debug_on()
   def _teardown_class(self):
     """Proxy function to guarantee the base implementation of
     teardown_class is called.
@@ -510,6 +512,7 @@ class BaseTestClass(utils.PDBable):
     Implementation is optional.
     """
 
+  @utils.debug_on()
   def _teardown_test(self, test_name):
     """Proxy function to guarantee the base implementation of teardown_test
     is called.

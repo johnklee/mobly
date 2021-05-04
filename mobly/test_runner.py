@@ -174,7 +174,7 @@ def _print_test_names(test_class):
     print(name)
 
 
-class TestRunner:
+class TestRunner(utils.PDBable):
   """The class that instantiates test classes, executes tests, and
   report results.
 
@@ -281,6 +281,7 @@ class TestRunner:
       log_dir: string, root folder where to write logs
       testbed_name: string, name of the testbed to run tests on
     """
+    utils.PDBable.__init__(self)
     self._log_dir = log_dir
     self._testbed_name = testbed_name
 
