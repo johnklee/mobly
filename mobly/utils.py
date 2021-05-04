@@ -16,6 +16,7 @@ import base64
 import concurrent.futures
 import datetime
 import errno
+import functools
 import inspect
 import io
 import logging
@@ -84,7 +85,7 @@ class PDBable:
     else:
       logging.warning("pdb: Skipping pdb request while not enabled!")
 
-  def pdb(self, message):
+  def pdb(self, message="-"):
     """Enter the pdb console and move to the frame where calling pdb
 
     Args:
@@ -92,6 +93,22 @@ class PDBable:
     """
     logging.warning(f"pdb: {message}")
     pdb.Pdb().set_trace(sys._getframe().f_back)
+
+
+def debug_on():
+    """Decorator to ensure callstack to enter pdb when exception being thrown"""
+    def decorator(f):
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs):
+            try:
+                return f(*args, **kwargs)
+            except Exception as e:
+                logging.error(f"Exception: {e}")
+                pdb.post_mortem()
+
+        return wrapper
+
+    return decorator
 
 
 def abs_path(path):
