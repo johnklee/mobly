@@ -133,7 +133,7 @@ def retry(max_count):
   return _outer_decorator
 
 
-class BaseTestClass:
+class BaseTestClass(utils.PDBable):
   """Base class for all test classes to inherit from.
 
   This class gets all the controller objects from test_runner and executes
