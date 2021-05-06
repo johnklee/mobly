@@ -103,8 +103,11 @@ def debug_on():
             try:
                 return f(*args, **kwargs)
             except Exception as e:
-                logging.error(f"Exception: {e}")
-                pdb.post_mortem()
+                if os.environ.get('MOBLY_PDB_ENABLE', 0):
+                    pdb.post_mortem()
+                    logging.error(f"Exit debug_on mode...")
+
+                raise e
 
         return wrapper
 
