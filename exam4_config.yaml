@@ -1,0 +1,10 @@
+MoblyParams: {LogPath: /tmp/}
+TestBeds:
+  # A test bed where adb will find Android devices.
+  - Name: SampleTestBed
+    Controllers:
+        AndroidDevice:
+            - serial: 07311JECB08252
+              label: dut
+    TestParams:
+        search_bluetooth_name: maylalee

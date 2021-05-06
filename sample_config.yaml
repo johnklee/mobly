@@ -1,0 +1,8 @@
+MoblyParams: {LogPath: /tmp/}
+TestBeds:
+  # A test bed where adb will find Android devices.
+  - Name: SampleTestBed
+    Controllers:
+        AndroidDevice: '*'
+    TestParams:
+        my_params: John Ken Mary
