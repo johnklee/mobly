@@ -11,12 +11,15 @@ DISCOVERABLE_TIME = 60
 
 
 class HelloWorldTest(base_test.BaseTestClass):
+    '''
+    See: https://github.com/johnklee/mobly/blob/master/docs/tutorial.md#example-4-multiple-test-beds-and-default-test-parameters
+    '''
     def setup_class(self):
         self.pdb('setup_class')
         # Registering android_device controller module, and declaring that the test
         # requires at least two Android devices.
         self.ads = self.register_controller(android_device)
-        
+
         # The device used to discover Bluetooth devices.
         self.dut = android_device.get_device(self.ads, label='dut')
         # Sets the tag that represents this device in logs.
@@ -36,8 +39,6 @@ class HelloWorldTest(base_test.BaseTestClass):
         self.dut.mbs.btSetName('IamDUT')
 
     def test_bluetooth_discovery(self):
-        self.dut.log.debug('force exception to occur!')
-        self.target.test()
         target_name = self.user_params['search_bluetooth_name'].strip()
         # self.target.mbs.btBecomeDiscoverable(DISCOVERABLE_TIME)
         self.dut.log.info('Looking for Bluetooth devices.')
