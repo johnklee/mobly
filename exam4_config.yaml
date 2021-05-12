@@ -7,4 +7,4 @@ TestBeds:
             - serial: 07311JECB08252
               label: dut
     TestParams:
-        search_bluetooth_name: maylalee
+        search_bluetooth_name: JOHNKCLEE1

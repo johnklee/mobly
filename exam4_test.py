@@ -15,7 +15,6 @@ class HelloWorldTest(base_test.BaseTestClass):
     See: https://github.com/johnklee/mobly/blob/master/docs/tutorial.md#example-4-multiple-test-beds-and-default-test-parameters
     '''
     def setup_class(self):
-        self.pdb('setup_class')
         # Registering android_device controller module, and declaring that the test
         # requires at least two Android devices.
         self.ads = self.register_controller(android_device)
