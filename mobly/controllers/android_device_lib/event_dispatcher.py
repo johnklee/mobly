@@ -151,7 +151,7 @@ class EventDispatcher:
     # the socket. Avoid sending any sl4a commands; just clean up the socket
     # and return.
     self._sl4a.disconnect()
-    self.poller.set_result("Done")
+    #self.poller.set_result("Done")
     # The polling thread is guaranteed to finish after a max of 60 seconds,
     # so we don't wait here.
     self.executor.shutdown(wait=False)

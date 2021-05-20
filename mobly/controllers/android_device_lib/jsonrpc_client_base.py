@@ -54,6 +54,7 @@ except ImportError:
 import abc
 import json
 import socket
+import re
 import threading
 
 from mobly.controllers.android_device_lib import callback_handler
@@ -264,7 +265,14 @@ class JsonRpcClientBase(abc.ABC):
     """Stops the adb port forwarding of the host port used by this client.
     """
     if self.host_port:
-      self._ad.adb.forward(['--remove', 'tcp:%d' % self.host_port])
+      adb_output = self._ad.adb.forward(['--list']).decode().strip()
+      is_adb_port_exist = False
+      for p in re.findall('tcp:(\d+)', adb_output):
+        if p == self.host_port:
+          is_adb_port_exist = True
+          break
+      if is_adb_port_exist:
+        self._ad.adb.forward(['--remove', 'tcp:%d' % self.host_port])
       self.host_port = None
 
   def _client_send(self, msg):
