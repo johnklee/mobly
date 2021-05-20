@@ -268,7 +268,7 @@ class JsonRpcClientBase(abc.ABC):
       adb_output = self._ad.adb.forward(['--list']).decode().strip()
       is_adb_port_exist = False
       for p in re.findall('tcp:(\d+)', adb_output):
-        if p == self.host_port:
+        if p == str(self.host_port):
           is_adb_port_exist = True
           break
       if is_adb_port_exist:
