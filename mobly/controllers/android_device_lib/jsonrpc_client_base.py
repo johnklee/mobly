@@ -45,7 +45,7 @@ The JSON protocol expected by this module is:
 # embedded Python environments. So, pre-emptively import and cache the encoder.
 # See https://bugs.python.org/issue17305 for more details.
 try:
-  import encodings.idna
+  import encodings.idna  # noqa
 except ImportError:
   # Some implementations of Python (e.g. IronPython) do not support the`idna`
   # encoding, so ignore import failures based on that.
@@ -265,9 +265,11 @@ class JsonRpcClientBase(abc.ABC):
     """Stops the adb port forwarding of the host port used by this client.
     """
     if self.host_port:
-      adb_output = self._ad.adb.forward(['--list']).decode().strip()
+      adb_output = self._ad.adb.forward(['--list'])
+      adb_output = adb_output.strip() if isinstance(adb_output, str) else \
+                   adb_output.decode().strip()
       is_adb_port_exist = False
-      for p in re.findall('tcp:(\d+)', adb_output):
+      for p in re.findall(r'tcp:(\d+)', str(adb_output)):
         if p == str(self.host_port):
           is_adb_port_exist = True
           break

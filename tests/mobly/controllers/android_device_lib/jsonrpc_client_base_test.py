@@ -27,6 +27,11 @@ class FakeRpcClient(jsonrpc_client_base.JsonRpcClientBase):
 
   def __init__(self):
     super().__init__(app_name='FakeRpcClient', ad=mock.Mock())
+    mock_strip = mock.Mock()
+    mock_strip.strip.return_value = "tcp:1"
+    mock_decode = mock.Mock()
+    mock_decode.decode.return_value = mock_strip
+    self._ad.adb.forward.return_value = mock_decode
 
 
 class JsonRpcClientBaseTest(jsonrpc_client_test_base.JsonRpcClientTestBase):
@@ -97,8 +102,14 @@ class JsonRpcClientBaseTest(jsonrpc_client_test_base.JsonRpcClientTestBase):
   def test_clear_host_port_positive(self):
     client = FakeRpcClient()
     client.host_port = 1
+    mock_strip = mock.Mock()
+    mock_strip.strip.return_value = "tcp:1"
+    mock_decode = mock.Mock()
+    mock_decode.decode.return_value = mock_strip
+    client._ad.adb.forward.return_value = mock_decode
     client.clear_host_port()
-    client._ad.adb.forward.assert_called_once_with(['--remove', 'tcp:1'])
+    self.assertTrue(client._ad.adb.forward.call_args_list[-1] == mock.call(['--remove', 'tcp:1']))
+    # client._ad.adb.forward.assert_called_once_with(['--remove', 'tcp:1'])
     self.assertIsNone(client.host_port)
 
   def test_clear_host_port_negative(self):

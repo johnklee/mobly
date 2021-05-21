@@ -178,7 +178,12 @@ class SnippetClientTest(jsonrpc_client_test_base.JsonRpcClientTestBase):
     client._conn.close.side_effect = [Exception('ha'), None]
     with self.assertRaisesRegex(Exception, 'ha'):
       client.stop_app()
-    adb_proxy.forward.assert_called_once_with(['--remove', 'tcp:1'])
+
+    self.assertTrue(
+      adb_proxy.forward.call_args_list and \
+      adb_proxy.forward.call_args_list[-1] == mock.call(['--remove', 'tcp:1'])
+    )
+    # adb_proxy.forward.assert_called_once_with(['--remove', 'tcp:1'])
 
   @mock.patch('socket.create_connection')
   @mock.patch('mobly.controllers.android_device_lib.snippet_client.'
@@ -481,6 +486,11 @@ class SnippetClientTest(jsonrpc_client_test_base.JsonRpcClientTestBase):
         'build_version_codename': ad.adb.getprop('ro.build.version.codename'),
         'build_version_sdk': ad.adb.getprop('ro.build.version.sdk'),
     }
+    mock_strip = mock.Mock()
+    mock_strip.strip.return_value = "tcp:1"
+    mock_decode = mock.Mock()
+    mock_decode.decode.return_value = mock_strip
+    ad.adb.forward.return_value = mock_decode
     return snippet_client.SnippetClient(package=MOCK_PACKAGE_NAME, ad=ad)
 
   def _setup_mock_instrumentation_cmd(self, mock_start_standing_subprocess,
