@@ -16,6 +16,7 @@ import logging
 import os
 import time
 
+from mobly.logb import get_logger
 from mobly import logger as mobly_logger
 from mobly import utils
 from mobly.controllers.android_device_lib import adb
@@ -47,7 +48,7 @@ class Config:
     self.output_file_path = output_file_path
 
 
-class Logcat(base_service.BaseService):
+class Logcat(base_service.BaseService, utils.PDBable):
   """Android logcat service for Mobly's AndroidDevice controller.
 
   Attributes:
@@ -65,6 +66,7 @@ class Logcat(base_service.BaseService):
     # Logcat service uses a single config obj, using singular internal
     # name: `_config`.
     self._config = configs if configs else Config()
+    self.logger = get_logger(self.__class__.__name__)
 
   def _enable_logpersist(self):
     """Attempts to enable logpersist daemon to persist logs."""
@@ -225,6 +227,7 @@ class Logcat(base_service.BaseService):
     cmd = ' "%s" -s %s logcat -v threadtime -T 1 %s >> "%s" ' % (
         adb.ADB, self._ad.serial, self._config.logcat_params,
         self.adb_logcat_file_path)
+    self.logger.debug(f"cmd={cmd}")
     process = utils.start_standing_subprocess(cmd, shell=True)
     self._adb_logcat_process = process
 

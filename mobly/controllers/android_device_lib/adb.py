@@ -19,6 +19,7 @@ import threading
 import time
 
 from mobly import utils
+from mobly.logb import get_logger
 import psutil
 
 # Command to use for running ADB commands.
@@ -159,6 +160,7 @@ class AdbProxy:
 
   def __init__(self, serial=''):
     self.serial = serial
+    self.logger = get_logger(self.__class__.__name__)
 
   def _exec_cmd(self, args, shell, timeout, stderr):
     """Executes adb commands.
@@ -284,11 +286,14 @@ class AdbProxy:
           adb_cmd.append(args)
         else:
           adb_cmd.extend(args)
+
+    self.logger.debug(f"adb_cmd={adb_cmd}")
     return adb_cmd
 
   def _exec_adb_cmd(self, name, args, shell, timeout, stderr):
     adb_cmd = self._construct_adb_cmd(name, args, shell=shell)
     out = self._exec_cmd(adb_cmd, shell=shell, timeout=timeout, stderr=stderr)
+    self.logger.debug(f"out={out}")
     return out
 
   def _execute_adb_and_process_stdout(self, name, args, shell, handler):
@@ -529,7 +534,7 @@ class AdbProxy:
           raise e
 
   def __getattr__(self, name):
-
+    
     def adb_call(args=None, shell=False, timeout=None, stderr=None):
       """Wrapper for an ADB command.
 
