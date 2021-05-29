@@ -19,6 +19,7 @@ import threading
 import time
 
 from mobly import utils
+from mobly.dspawn import Dspawn
 import psutil
 
 # Command to use for running ADB commands.
@@ -527,6 +528,10 @@ class AdbProxy:
           time.sleep(ADB_ROOT_RETRY_ATTEMPT_INTERVAL_SEC)
         else:
           raise e
+
+  def spawn(self):
+    """Spawn a interactive adb shell."""
+    return Dspawn(self.serial)
 
   def __getattr__(self, name):
 
